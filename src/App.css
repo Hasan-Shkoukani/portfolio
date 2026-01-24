@@ -1,0 +1,29 @@
+.container{
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    margin-top: 5%;
+    margin-inline: auto;
+    max-width: 1200px;
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .container {
+        max-width: 900px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin-top: 5%;
+        max-width: 100%;
+        padding: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin-top: 5%;
+    }
+}

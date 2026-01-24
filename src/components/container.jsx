@@ -102,7 +102,7 @@ function Container() {
             case "projects":
                 const projects = [
                     {
-                    name: "Prof Dux Mini - Senior Project",
+                    name: "Prof Dux Mini - Senior Project II",
                     description:
                         "AI-Twilio powered Calling Service to support Lecturers. Features include sending announcements, online meetings, and task organization through Google Calendar.",
                     github: "https://github.com/Hasan-Shkoukani/profduxmini",

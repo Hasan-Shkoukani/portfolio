@@ -126,10 +126,21 @@ function Container() {
                     github: "https://github.com/Hasan-Shkoukani/bolt",
                     },
                     {
-                    name: "GitReview",
+                    name: "Charti",
                     description:
-                        "AI-powered code analysis tool providing automated scoring on readability, maintainability, performance, and overall code quality.",
-                    github: "https://github.com/Hasan-Shkoukani/git-review",
+                        "A web-based tool that generates diagrams from text or code using the Gemini API and displays them with React Flow. It supports dark mode, and users can download their generated diagrams as PNG images.",
+                    github: "https://github.com/Hasan-Shkoukani/charti",
+                    },
+                    {
+                    name: "Spendless",
+                    description:
+                        "smart assistant web app that helps users generate realistic shopping/meal plans based on a budget OR estimate the total cost of a plan they've already made. It uses Google Gemini AI to intelligently handle budget estimation and plan generation.",
+                    github: "https://github.com/Hasan-Shkoukani/spendless",
+                    },{
+                    name: "Arduino LED Rgb Strip Animations",
+                    description:
+                        "Arduino LED RGB Strip, with 2 animations, using C code and Tinker CAD website",
+                    github: "https://www.tinkercad.com/things/1pRDMiVGglL-project",
                     },
                 ];
 

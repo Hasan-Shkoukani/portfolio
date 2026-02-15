@@ -4,7 +4,7 @@ import "./header.css";
 function Header({ activeSection, setActiveSection }) {
     return (
         <header className="header">
-            <a href="#" className="logo">hshkoukani</a>
+            <a href="#" className="logo">h.shkoukani</a>
             <nav className="nav">
                 <ul className="nav-list">
                     <li><button onClick={() => setActiveSection("about")}>About</button></li>

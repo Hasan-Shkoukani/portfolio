@@ -1,29 +1,15 @@
-:root {
-  --bg: #edeff4;
-  --surface: #f8f9fc;
-  --ink: #12141b;
-  --muted: #535a6b;
-  --line: rgb(18 20 27 / 0.12);
-  --cobalt: #2f55ff;
-  --cyan: #19c6cf;
-  --coral: #ff6b4a;
-  --aurora: 0.55;
-  --gut: clamp(1rem, 4vw, 3.5rem);
-  --display: 'Bricolage Grotesque', system-ui, sans-serif;
-  --body: 'Geist', system-ui, sans-serif;
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  color-scheme: light dark;
-}
+@import './tokens.css';
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0d0f15;
-    --surface: #161922;
-    --ink: #e9ecf3;
-    --muted: #9aa1b2;
-    --line: rgb(233 236 243 / 0.12);
-    --aurora: 0.32;
-  }
+:root {
+  --bg: var(--black);
+  --surface: #05081c;
+  --ink: #e9ecf3;
+  --muted: #9aa1b2;
+  --line: rgb(127 246 255 / 0.16);
+  --gut: clamp(1rem, 4vw, 3.5rem);
+  --display: var(--pixel);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  color-scheme: dark;
 }
 
 @property --ang {
@@ -37,7 +23,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  background: var(--bg);
 }
 
 body {
@@ -53,10 +39,12 @@ h1,
 h2,
 h3 {
   font-family: var(--display);
-  font-weight: 800;
+  font-weight: 400;
   margin: 0;
-  letter-spacing: -0.035em;
-  line-height: 0.95;
+  letter-spacing: -0.04em;
+  word-spacing: -0.15em;
+  line-height: 0.9;
+  color: var(--white);
 }
 
 p {
@@ -68,72 +56,127 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid var(--cobalt);
+  outline: 2px solid var(--cyan);
   outline-offset: 4px;
   border-radius: 6px;
 }
 
 /* ---------- ambient layers ---------- */
 
-.aurora {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-  opacity: var(--aurora);
-}
-
-.aurora i {
-  position: absolute;
-  width: 70vmax;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  will-change: transform;
-}
-
-.aurora i:nth-child(1) {
-  background: radial-gradient(closest-side, var(--cobalt), transparent);
-  top: -30vmax;
-  left: -20vmax;
-  animation: drift-a 22s ease-in-out infinite alternate;
-}
-
-.aurora i:nth-child(2) {
-  background: radial-gradient(closest-side, var(--cyan), transparent);
-  bottom: -35vmax;
-  right: -25vmax;
-  animation: drift-b 26s ease-in-out infinite alternate;
-}
-
-.aurora i:nth-child(3) {
-  background: radial-gradient(closest-side, var(--coral), transparent);
-  width: 45vmax;
-  top: 40%;
-  left: 35%;
-  opacity: 0.6;
-  animation: drift-c 19s ease-in-out infinite alternate;
-}
-
-@keyframes drift-a {
-  to { transform: translate(35vw, 30vh) scale(1.2); }
-}
-@keyframes drift-b {
-  to { transform: translate(-40vw, -25vh) scale(0.85); }
-}
-@keyframes drift-c {
-  to { transform: translate(-30vw, -35vh) scale(1.35); }
-}
-
-/* film grain keeps the gradients from looking like a stock wallpaper */
-body::after {
-  content: '';
+.crt {
   position: fixed;
   inset: 0;
   z-index: 50;
   pointer-events: none;
-  opacity: 0.07;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.crt i {
+  position: absolute;
+  inset: 0;
+}
+
+/* edges go soft like the curved glass of a filmed tube */
+.crt-blur::before,
+.crt-blur::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 14vw;
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(2.5px);
+  mask-image: linear-gradient(to right, #000, transparent);
+}
+
+.crt-blur::after {
+  inset: 0 0 0 auto;
+  mask-image: linear-gradient(to left, #000, transparent);
+}
+
+/* grid + scanlines + vignette in one layer: every full-screen layer is composited over the page each frame */
+.crt-screen {
+  background:
+    radial-gradient(60% 110% at center, transparent 65%, rgb(0 0 0 / 0.45) 88%, rgb(0 0 0 / 0.8) 100%),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.28) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(0deg, rgb(0 0 0 / 0.14) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(transparent 0 2px, rgb(0 0 0 / 0.12) 2px 4px);
+  animation: flicker 5s steps(1) infinite;
+}
+
+/* faint bright band rolling down: the scanline drift */
+.crt .crt-band {
+  inset: 0 0 auto;
+  height: 35vh;
+  background: linear-gradient(transparent, rgb(127 246 255 / 0.035), transparent);
+  will-change: transform;
+  animation: roll 11s linear infinite;
+}
+
+@keyframes roll {
+  from { transform: translateY(-35vh); }
+  to { transform: translateY(100vh); }
+}
+
+/* the overlay thins for a frame, so the screen pulses brighter */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  6% { opacity: 0.85; }
+  7% { opacity: 1; }
+  41% { opacity: 0.9; }
+  43% { opacity: 1; }
+  77% { opacity: 0.8; }
+  78% { opacity: 1; }
+}
+
+.glow {
+  position: relative;
+  isolation: isolate;
+  color: var(--white);
+  text-shadow: var(--glow-md);
+}
+
+/* chromatic aberration: red and blue copies nudged apart, sitting behind the white text (no blend mode needed) */
+.glow::before,
+.glow::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  text-shadow: none;
+  pointer-events: none;
+}
+
+.glow::before {
+  color: rgb(255 40 80 / 0.7);
+  translate: -0.03em 0;
+}
+
+.glow::after {
+  color: rgb(10 26 255 / 0.8);
+  translate: 0.03em 0;
+}
+
+.viz {
+  position: fixed;
+  inset: auto 0 0;
+  width: 100%;
+  height: clamp(4rem, 12vh, 7.5rem);
+  z-index: 45;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s;
+  filter: drop-shadow(0 0 6px var(--cyan));
+}
+
+.viz.on {
+  opacity: 0.85;
+}
+
+.particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .progress {
@@ -143,7 +186,8 @@ body::after {
   z-index: 40;
   transform-origin: left;
   transform: scaleX(0);
-  background: linear-gradient(90deg, var(--cobalt), var(--cyan), var(--coral));
+  background: linear-gradient(90deg, var(--deep), var(--cyan));
+  box-shadow: 0 0 10px var(--cyan);
 }
 
 @supports (animation-timeline: scroll()) {
@@ -184,14 +228,27 @@ body::after {
   transition: color 0.3s;
 }
 
-.nav a:hover {
+.nav button {
+  font: inherit;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.nav a:hover,
+.nav button:hover,
+.nav button[aria-pressed='true'] {
   color: var(--ink);
 }
 
 .nav .logo {
   font-family: var(--display);
-  font-weight: 800;
-  color: var(--ink);
+  font-size: 1.4rem;
+  color: var(--white);
+  text-shadow: var(--glow-sm);
   margin-right: 0.5rem;
 }
 
@@ -204,6 +261,7 @@ body::after {
   align-items: end;
   padding: 6rem var(--gut) clamp(2.5rem, 6vh, 4.5rem);
   overflow: hidden;
+  background: radial-gradient(55% 60% at 70% 45%, color-mix(in srgb, var(--deep) 35%, transparent), transparent 70%);
 }
 
 .hero-canvas {
@@ -212,6 +270,7 @@ body::after {
 }
 
 .blob {
+  position: relative;
   width: 100%;
   height: 100%;
   display: block;
@@ -227,15 +286,16 @@ body::after {
 }
 
 .name {
-  font-size: clamp(3.4rem, 14.5vw, 12rem);
+  font-size: clamp(3rem, 16vw, 15rem);
   line-height: 0.86;
-  letter-spacing: -0.04em;
-  font-variation-settings: 'wdth' 85;
+  /* same phosphor + fringe as .glow, as text-shadow because the name is split into per-letter spans */
+  text-shadow: -0.03em 0 rgb(255 40 80 / 0.45), 0.03em 0 rgb(10 26 255 / 0.7), var(--glow-lg);
 }
 
 .name-line {
   display: block;
-  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: 0.25em;
   padding-bottom: 0.06em;
   perspective: 600px;
 }
@@ -255,27 +315,18 @@ body::after {
 
 .typed {
   font-family: var(--display);
-  font-weight: 700;
-  font-size: clamp(1.3rem, 2.4vw, 1.75rem);
+  font-size: clamp(1.7rem, 3.2vw, 2.4rem);
   color: var(--ink);
   min-height: 1.4em;
 }
 
 .typed-word {
-  background: linear-gradient(90deg, var(--cobalt), var(--cyan), var(--coral), var(--cobalt));
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: slide 6s linear infinite;
+  color: var(--cyan);
+  text-shadow: var(--glow-sm);
 }
 
 .typed-word::after {
-  color: var(--cobalt);
-}
-
-@keyframes slide {
-  to { background-position: 300% 0; }
+  color: var(--cyan);
 }
 
 .ctas {
@@ -303,8 +354,14 @@ body::after {
 }
 
 .btn-primary {
-  color: #fff;
-  background: linear-gradient(120deg, var(--cobalt), #1f3bd1);
+  color: var(--white);
+  background: var(--deep);
+  box-shadow: 0 0 22px -2px color-mix(in srgb, var(--deep) 80%, transparent);
+  transition: scale 0.2s var(--ease), box-shadow 0.4s;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 0 1px var(--cyan), 0 0 30px var(--deep);
 }
 
 /* light follows the cursor across the button */
@@ -313,7 +370,7 @@ body::after {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), var(--cyan), transparent 60%);
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), #4d6bff, transparent 60%);
   opacity: 0;
   transition: opacity 0.4s;
 }
@@ -331,16 +388,35 @@ body::after {
 
 /* ---------- about ---------- */
 
+main {
+  overflow-x: clip;
+}
+
 main > section {
+  position: relative;
+  isolation: isolate;
   padding: clamp(5rem, 14vh, 9rem) var(--gut);
 }
 
+main > section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(50% 45% at 30% 40%, color-mix(in srgb, var(--deep) 26%, transparent), transparent 75%);
+}
+
+main > section:nth-child(even)::before {
+  background-position: 0 0;
+  background-image: radial-gradient(50% 45% at 70% 50%, color-mix(in srgb, var(--deep) 26%, transparent), transparent 75%);
+}
+
 .lede {
-  font-family: var(--display);
-  font-weight: 600;
+  font-weight: 500;
   font-size: clamp(1.6rem, 3.6vw, 3rem);
   line-height: 1.12;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
   max-width: 24ch;
 }
 
@@ -361,8 +437,9 @@ main > section {
 }
 
 .role h3 {
-  font-size: clamp(3rem, 10vw, 8.5rem);
+  font-size: clamp(3.8rem, 13vw, 11rem);
   transition: letter-spacing 0.6s var(--ease);
+  will-change: transform;
 }
 
 .role p {
@@ -374,7 +451,7 @@ main > section {
   position: absolute;
   inset: 0 calc(var(--gut) * -1);
   z-index: -1;
-  background: linear-gradient(100deg, color-mix(in srgb, var(--cobalt) 18%, transparent), color-mix(in srgb, var(--cyan) 14%, transparent), color-mix(in srgb, var(--coral) 16%, transparent));
+  background: linear-gradient(100deg, color-mix(in srgb, var(--deep) 30%, transparent), color-mix(in srgb, var(--cyan) 10%, transparent), transparent);
   transform: scaleY(0);
   transform-origin: bottom;
   transition: transform 0.6s var(--ease);
@@ -385,7 +462,7 @@ main > section {
     transform: scaleY(1);
   }
   .role:hover h3 {
-    letter-spacing: -0.01em;
+    letter-spacing: 0.02em;
   }
 }
 
@@ -393,7 +470,7 @@ main > section {
 
 .skills h2,
 .contact h2 {
-  font-size: clamp(3rem, 9vw, 7.5rem);
+  font-size: clamp(3.8rem, 12vw, 9.5rem);
 }
 
 .stage {
@@ -431,7 +508,7 @@ main > section {
   border-radius: 20px;
   border: 1px solid color-mix(in srgb, var(--surface) 70%, transparent);
   background: color-mix(in srgb, var(--surface) 72%, transparent);
-  box-shadow: 0 20px 40px -18px color-mix(in srgb, var(--cobalt) 45%, transparent);
+  box-shadow: 0 0 30px -8px color-mix(in srgb, var(--deep) 75%, transparent);
   transform: rotateY(calc(var(--i) * 360deg / var(--n))) translateZ(var(--r));
 }
 
@@ -454,8 +531,8 @@ main > section {
 }
 
 .skill-lists h3 {
-  font-size: 1.1rem;
-  letter-spacing: -0.01em;
+  font-size: 1.6rem;
+  text-shadow: var(--glow-sm);
   margin-bottom: 0.75rem;
 }
 
@@ -496,16 +573,17 @@ main > .projects {
 }
 
 .track-intro {
-  width: min(26rem, 80vw);
+  width: auto;
   flex-shrink: 0;
 }
 
 .track-intro h2 {
-  font-size: clamp(3rem, 9vw, 7.5rem);
+  font-size: clamp(3.8rem, 12vw, 9.5rem);
   margin-bottom: 1rem;
 }
 
 .track-intro p {
+  max-width: 26rem;
   color: var(--muted);
 }
 
@@ -522,9 +600,9 @@ main > .projects {
   border: 1.5px solid transparent;
   background:
     linear-gradient(var(--surface), var(--surface)) padding-box,
-    conic-gradient(from var(--ang), var(--cobalt), var(--cyan), var(--coral), var(--cobalt)) border-box;
-  animation: rotate-border 7s linear infinite;
-  box-shadow: 0 30px 60px -30px color-mix(in srgb, var(--cobalt) 40%, transparent);
+    conic-gradient(from var(--ang), var(--deep), var(--cyan), var(--white), var(--cyan), var(--deep)) border-box;
+  animation: rotate-border 7s linear infinite paused;
+  box-shadow: 0 0 40px -12px color-mix(in srgb, var(--deep) 80%, transparent);
   overflow: hidden;
 }
 
@@ -537,12 +615,11 @@ main > .projects {
   height: 11rem;
   overflow: hidden;
   background:
-    radial-gradient(circle at 20% 30%, hsl(calc(225 + var(--h)) 95% 62%), transparent 55%),
-    radial-gradient(circle at 80% 70%, hsl(calc(185 + var(--h)) 80% 55%), transparent 55%),
-    radial-gradient(circle at 60% 10%, hsl(calc(12 + var(--h)) 100% 66%), transparent 50%),
-    hsl(calc(225 + var(--h)) 70% 25%);
+    radial-gradient(circle at 20% 30%, hsl(calc(234 + var(--h)) 100% 52%), transparent 55%),
+    radial-gradient(circle at 80% 70%, hsl(calc(185 + var(--h)) 100% 72%), transparent 55%),
+    #000814;
   background-size: 160% 160%;
-  animation: mesh 9s ease-in-out infinite alternate;
+  animation: mesh 9s ease-in-out infinite alternate paused;
 }
 
 @keyframes mesh {
@@ -553,10 +630,15 @@ main > .projects {
   position: absolute;
   right: -0.08em;
   bottom: -0.3em;
-  font: 800 13rem/1 var(--display);
+  font: 400 16rem/1 var(--display);
   color: transparent;
   -webkit-text-stroke: 1.5px rgb(255 255 255 / 0.6);
   transition: translate 0.8s var(--ease);
+}
+
+.card:hover .card-inner,
+.card:hover .card-art {
+  animation-play-state: running;
 }
 
 .card:hover .card-art span {
@@ -570,12 +652,12 @@ main > .projects {
 }
 
 .card-body h3 {
-  font-size: 1.6rem;
-  letter-spacing: -0.02em;
+  font-size: 2.1rem;
+  text-shadow: var(--glow-sm);
 }
 
 .card-body .note {
-  color: var(--cobalt);
+  color: var(--cyan);
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -594,18 +676,8 @@ main > .projects {
 }
 
 .contact h2 {
-  max-width: 11ch;
+  max-width: 14ch;
   padding-bottom: 0.08em;
-  background: linear-gradient(90deg, var(--cobalt), var(--cyan), var(--coral), var(--cobalt));
-  background-size: 250% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: slide-text 8s ease-in-out infinite alternate;
-}
-
-@keyframes slide-text {
-  to { background-position: 100% 0; }
 }
 
 .contact p {
@@ -647,9 +719,23 @@ main > .projects {
   }
 }
 
+@media (max-width: 899px), (pointer: coarse) {
+  .crt-blur {
+    display: none;
+  }
+}
+
 @media (max-width: 700px) {
+  main > section {
+    padding-block: 3.5rem;
+  }
+  .roles {
+    margin-top: 2rem;
+  }
   .role {
     grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 1.25rem 0;
   }
   .skill-lists {
     grid-template-columns: 1fr;
@@ -664,9 +750,6 @@ main > .projects {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   *,
   *::before,
   *::after {

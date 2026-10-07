@@ -1,9 +1,14 @@
-import { lazy, Suspense, useEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ScrollSmoother } from 'gsap/ScrollSmoother'
 import { TypeAnimation } from 'react-type-animation'
+import CRTOverlay from './CRTOverlay'
+import GlowText from './GlowText'
+import Particles from './Particles'
+import Visualizer from './Visualizer'
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger, ScrollSmoother)
 
 const Blob = lazy(() => import('./Blob'))
 
@@ -105,9 +110,12 @@ export default function App() {
     const mm = gsap.matchMedia(root.current)
 
     mm.add(
-      { motion: '(prefers-reduced-motion: no-preference)', wide: '(min-width: 900px)' },
+      { motion: '(prefers-reduced-motion: no-preference)', wide: '(min-width: 900px)', fine: '(pointer: fine)' },
       ({ conditions: c }) => {
         if (!c.motion) return
+
+        // eased wheel scrolling on desktop; touch keeps native momentum. Must exist before the ScrollTriggers.
+        if (c.fine) ScrollSmoother.create({ wrapper: '#smooth-wrapper', content: '#smooth-content', smooth: 1.1 })
 
         gsap
           .timeline({ defaults: { ease: 'expo.out' } })
@@ -125,6 +133,21 @@ export default function App() {
             y: 50,
             duration: 1.3,
             ease: 'expo.out',
+            scrollTrigger: { trigger: el, start: 'top 88%' },
+          }),
+        )
+
+        // headings smear in like a tube catching the signal: stretched and blurred, then sharp
+        gsap.utils.toArray('.glow').forEach(el =>
+          // fromTo with explicit end values: a plain from() reads the current state as the end,
+          // and StrictMode's second effect run would find the heading still stretched
+          gsap.fromTo(el, { filter: 'blur(14px)', scaleX: 1.35, opacity: 0 }, {
+            filter: 'blur(0px)',
+            scaleX: 1,
+            opacity: 1,
+            duration: 1.2,
+            ease: 'expo.out',
+            clearProps: 'filter',
             scrollTrigger: { trigger: el, start: 'top 88%' },
           }),
         )
@@ -228,6 +251,9 @@ export default function App() {
       })
     }
 
+    // VT323 can land after ScrollTrigger measured the page; re-measure once it's in
+    document.fonts.ready.then(() => ScrollTrigger.refresh())
+
     return () => {
       mm.revert()
       cleanups.forEach(f => f())
@@ -236,26 +262,54 @@ export default function App() {
 
   const ring = [...technical, ...soft]
 
+  // browsers block autoplay with sound, so music starts on a click
+  const audio = useRef(null)
+  const [playing, setPlaying] = useState(false)
+  // the smoother moves content with transforms, so native #anchor jumps land in the wrong place
+  const onNav = e => {
+    const href = e.target.closest('a')?.getAttribute('href')
+    const smoother = ScrollSmoother.get()
+    if (smoother && href?.startsWith('#')) {
+      e.preventDefault()
+      smoother.scrollTo(href, true, 'top top')
+    }
+  }
+
+  const toggleSound = () => {
+    const a = audio.current
+    if (a.paused) {
+      a.volume = 0.4
+      a.play().then(() => setPlaying(true), () => {})
+    } else {
+      a.pause()
+      setPlaying(false)
+    }
+  }
+
   return (
     <div ref={root}>
-      <div className="aurora" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </div>
+      <CRTOverlay />
       <div className="progress" aria-hidden="true" />
 
-      <nav className="nav">
+      <nav className="nav" onClick={onNav}>
         <a href="#top" className="logo">
           h.shkoukani
         </a>
         <a href="#about">About</a>
         <a href="#skills">Skills</a>
         <a href="#projects">Projects</a>
+        <button type="button" onClick={toggleSound} aria-pressed={playing}>
+          {playing ? 'Sound on' : 'Sound off'}
+        </button>
+        <audio ref={audio} src="/music.mp3" loop preload="none" />
       </nav>
+      <Visualizer audio={audio} playing={playing} />
 
+      <div id="smooth-wrapper">
+      <div id="smooth-content">
       <header className="hero" id="top">
         <div className="hero-canvas">
+          <Particles />
           <Suspense fallback={null}>
             <Blob />
           </Suspense>
@@ -302,7 +356,7 @@ export default function App() {
           <div className="roles">
             {roles.map(r => (
               <article className="role" key={r.title}>
-                <h3>{r.title}</h3>
+                <GlowText as="h3">{r.title}</GlowText>
                 <p>{r.text}</p>
               </article>
             ))}
@@ -310,7 +364,7 @@ export default function App() {
         </section>
 
         <section className="skills" id="skills">
-          <h2 className="mask">Toolbox</h2>
+          <GlowText>Toolbox</GlowText>
           <div className="stage" aria-hidden="true">
             <div className="orbit">
               <div className="spin">
@@ -345,11 +399,11 @@ export default function App() {
         <section className="projects" id="projects">
           <div className="track">
             <div className="track-intro">
-              <h2>Projects</h2>
+              <GlowText>Projects</GlowText>
               <p>Things I've built, from senior projects to weekend experiments.</p>
             </div>
             {projects.map((p, i) => (
-              <a className="card" href={p.href} target="_blank" rel="noopener noreferrer" key={p.name} style={{ '--h': i * 47 }}>
+              <a className="card" href={p.href} target="_blank" rel="noopener noreferrer" key={p.name} style={{ '--h': ((i * 7) % 24) - 12 }}>
                 <div className="card-inner" data-tilt>
                   <div className="card-art" aria-hidden="true">
                     <span>{p.name[0]}</span>
@@ -366,7 +420,7 @@ export default function App() {
         </section>
 
         <section className="contact">
-          <h2 className="mask">Got something to build?</h2>
+          <GlowText>Got something to build?</GlowText>
           <p>Websites, AI agents, mobile apps, automations. Send me a message on LinkedIn.</p>
           <a className="btn btn-primary btn-big" href={LINKEDIN} target="_blank" rel="noopener noreferrer" data-magnet>
             Hire me
@@ -383,6 +437,8 @@ export default function App() {
           LinkedIn
         </a>
       </footer>
+      </div>
+      </div>
     </div>
   )
 }

@@ -1,0 +1,14 @@
+/* CRT / phosphor design tokens: everything in the restyle reads from here */
+:root {
+  --black: #000;
+  --deep: #0a1aff;
+  --cyan: #7ff6ff;
+  --white: #fff;
+
+  --glow-sm: 0 0 1px var(--white), 0 0 6px var(--cyan), 0 0 14px var(--deep);
+  --glow-md: 0 0 1px var(--white), 0 0 4px var(--white), 0 0 12px var(--cyan), 0 0 34px var(--deep);
+  --glow-lg: 0 0 2px var(--white), 0 0 8px var(--cyan), 0 0 22px var(--cyan), 0 0 60px var(--deep);
+
+  --pixel: 'VT323', monospace;
+  --body: 'Geist', system-ui, sans-serif;
+}

@@ -27,12 +27,11 @@ const fragmentShader = /* glsl */ `
     vec3 n = normalize(cross(dFdx(vView), dFdy(vView)));
     vec3 v = normalize(-vView);
     float fr = pow(1.0 - abs(dot(n, v)), 2.2);
-    vec3 cobalt = vec3(0.184, 0.333, 1.0);
-    vec3 cyan = vec3(0.098, 0.776, 0.812);
-    vec3 coral = vec3(1.0, 0.42, 0.29);
+    vec3 cobalt = vec3(0.039, 0.102, 1.0);
+    vec3 cyan = vec3(0.498, 0.965, 1.0);
     float k = 0.5 + 0.5 * sin(vD * 3.0 + n.y * 2.0 + uTime * 0.4);
     vec3 col = mix(cobalt, cyan, k);
-    col = mix(col, coral, smoothstep(0.25, 0.95, n.x * 0.6 + vD * 0.5 + 0.2 * sin(uTime * 0.3)));
+    col = mix(col, vec3(1.0), 0.6 * smoothstep(0.25, 0.95, n.x * 0.6 + vD * 0.5 + 0.2 * sin(uTime * 0.3)));
     float spec = pow(max(dot(reflect(-normalize(vec3(-0.4, 0.8, 0.6)), n), v), 0.0), 24.0);
     col += spec * 0.6 + fr * 0.35;
     gl_FragColor = vec4(col, 1.0);
@@ -49,11 +48,12 @@ export default function Blob() {
 
     let renderer
     try {
-      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !small, powerPreference: 'low-power' })
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'low-power' })
     } catch {
       return // no WebGL: the CSS gradients carry the hero alone
     }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, small ? 1.5 : 2))
+    // ponytail: fixed 0.75 render scale; the CRT grid hides the softness. Raise it if a sharper blob matters more than frame rate.
+    renderer.setPixelRatio(0.75)
 
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 50)
@@ -63,7 +63,7 @@ export default function Blob() {
     const material = amp => new THREE.ShaderMaterial({ uniforms: { uTime: time, uAmp: { value: amp } }, vertexShader, fragmentShader })
 
     const group = new THREE.Group()
-    const blob = new THREE.Mesh(new THREE.IcosahedronGeometry(1.25, small ? 32 : 64), material(0.28))
+    const blob = new THREE.Mesh(new THREE.IcosahedronGeometry(1.25, small ? 24 : 40), material(0.28))
     const ring = new THREE.Mesh(new THREE.TorusGeometry(2.05, 0.03, 12, 160), material(0))
     ring.rotation.set(1.15, 0.3, 0)
     const moons = [0.22, 0.14, 0.09].map(size => {

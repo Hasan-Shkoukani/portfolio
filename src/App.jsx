@@ -98,13 +98,13 @@ const projects = [
   {
     name: 'Relay',
     note: 'Flask + dental YOLO model + GPT',
-    text: 'Ask questions about dental X-rays, documents, YouTube videos and a knowledge base, by typing or out loud. A detection model marks findings on the X-ray and every answer cites its source.',
+    text: 'Ask questions about dental X-rays, documents, YouTube videos and a knowledge base, by typing or out loud. A YOLO model, picked by benchmarking 7 candidates on 194 X-rays, marks findings on the image, and every answer cites its page, line or timestamp.',
     href: `${GITHUB}/relay`,
   },
   {
     name: 'Prof Dux Mini',
     note: 'Senior project II',
-    text: 'AI calling service built on Twilio that helps lecturers send announcements, run online meetings and organize tasks through Google Calendar.',
+    text: 'AI calling agent built on Twilio that helps lecturers send announcements, run online meetings and organize tasks through Google Calendar.',
     href: `${GITHUB}/profduxmini`,
   },
   {
@@ -116,7 +116,7 @@ const projects = [
   {
     name: 'Satellite change detection',
     note: 'MSc · computer vision',
-    text: 'Finds what changed between before and after satellite images. A lightweight CNN benchmarked against U-Net, Siamese U-Net and MobileNetV2 on LEVIR-CD and the 2023 Türkiye earthquake.',
+    text: 'Per-pixel change masks from before and after satellite images. Benchmarked a lightweight CNN against U-Net, Siamese U-Net and MobileNetV2: about 13x smaller and 2x faster, also tested on the 2023 Türkiye earthquake.',
     href: `${GITHUB}/lightweight-ann-change-detection`,
   },
   {
@@ -124,6 +124,12 @@ const projects = [
     note: 'MSc · self-organizing maps',
     text: 'Segments mall customers with a 10×10 self-organizing map and compares the result against a K-Means baseline.',
     href: `${GITHUB}/som-customer-segmentation`,
+  },
+  {
+    name: 'GitReview',
+    note: 'LLM code review',
+    text: 'Scores code for readability, maintainability, performance and overall quality, from uploaded files or a whole GitHub repository, with feedback on what to improve.',
+    href: `${GITHUB}/git-review`,
   },
   {
     name: 'Unit-testing framework',

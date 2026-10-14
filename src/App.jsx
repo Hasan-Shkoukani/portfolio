@@ -54,7 +54,8 @@ const experience = [
       'Rebuilt and launched a "watch and earn" rewards platform for a Swedish client after inheriting a codebase that did not work.',
       'Wrote the backend from scratch (roles, session tracking, earnings engine, referrals, Stripe payouts) and connected it to the existing frontend.',
       'Built the admin dashboard, Google OAuth, OTP verification and ad delivery across several networks, then added native video ads and hosted surveys after an AdSense rejection.',
-      'Deployed on Vercel and an OVH VPS, locked the server down within minutes of a live brute-force attack, and handled scope, pricing and delivery directly with the client.',
+      'Deployed on Vercel and an OVH VPS, then responded to a live brute-force attack on the production VPS and hardened it (key-only SSH, firewall rules, rate limiting).',
+      'Handled scope, pricing and delivery directly with the client.',
     ],
   },
   {

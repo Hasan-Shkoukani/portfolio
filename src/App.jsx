@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollSmoother } from 'gsap/ScrollSmoother'
@@ -6,7 +6,6 @@ import { TypeAnimation } from 'react-type-animation'
 import CRTOverlay from './CRTOverlay'
 import GlowText from './GlowText'
 import Particles from './Particles'
-import Visualizer from './Visualizer'
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother)
 
@@ -45,7 +44,63 @@ const soft = [
   ['Problem solving', 'ps'],
 ]
 
+const experience = [
+  {
+    role: 'Full-stack developer',
+    org: 'TimiPays',
+    href: 'https://timipays.com',
+    meta: 'Freelance · Jul 2026 to present · Sweden, remote',
+    points: [
+      'Rebuilt and launched a "watch and earn" rewards platform for a Swedish client after inheriting a codebase that did not work.',
+      'Wrote the backend from scratch (roles, session tracking, earnings engine, referrals, Stripe payouts) and connected it to the existing frontend.',
+      'Built the admin dashboard, Google OAuth, OTP verification and ad delivery across several networks, then added native video ads and hosted surveys after an AdSense rejection.',
+      'Deployed on Vercel and an OVH VPS, locked the server down within minutes of a live brute-force attack, and handled scope, pricing and delivery directly with the client.',
+    ],
+  },
+  {
+    role: 'Frontend developer',
+    org: 'Pium',
+    href: 'https://piumai.com',
+    meta: 'Freelance · Jan 2026 to Aug 2026 · Remote',
+    points: [
+      'Built medical-summary features: text highlighting, dynamic translation rendering, key-concept visualizations, terminology lists and contextual tooltips.',
+      'Reworked the UI and UX from direct student feedback to make the platform easier to use and more accessible.',
+    ],
+  },
+  {
+    role: 'AI engineer intern',
+    org: 'Near East University AI and Robotics Institute',
+    meta: 'Internship · Jun 2025 to Jul 2025 · North Cyprus, remote',
+    points: ['Machine learning and natural language processing.'],
+  },
+  {
+    role: 'Frontend development intern',
+    org: 'Near East University AI and Robotics Institute',
+    meta: 'Internship · Jan 2025 to Feb 2025 · North Cyprus, hybrid',
+    points: ['20-day Next.js internship where I built an interactive calendar, a loading screen and a snapshot camera component.'],
+  },
+]
+
+// freelance work, then the bigger AI builds, then research, then tools and experiments
 const projects = [
+  {
+    name: 'TimiPays',
+    note: 'Freelance · full-stack',
+    text: 'Watch-and-earn rewards platform. Backend written from scratch: earnings engine, referrals, Stripe payouts, admin dashboard and ad delivery.',
+    href: 'https://timipays.com',
+  },
+  {
+    name: 'Pium',
+    note: 'Freelance · frontend',
+    text: 'Study platform for medical students. Built the summary features: highlighting, live translation, key-concept visuals, terminology lists and tooltips.',
+    href: 'https://piumai.com',
+  },
+  {
+    name: 'Relay',
+    note: 'Flask + dental YOLO model + GPT',
+    text: 'Ask questions about dental X-rays, documents, YouTube videos and a knowledge base, by typing or out loud. A detection model marks findings on the X-ray and every answer cites its source.',
+    href: `${GITHUB}/relay`,
+  },
   {
     name: 'Prof Dux Mini',
     note: 'Senior project II',
@@ -57,6 +112,18 @@ const projects = [
     note: 'Senior project I',
     text: 'AI-powered mobile app for university life. MERN and React Native, with a live timetable, event calendar and LLM document parsing.',
     href: `${GITHUB}/solin`,
+  },
+  {
+    name: 'Satellite change detection',
+    note: 'MSc · computer vision',
+    text: 'Finds what changed between before and after satellite images. A lightweight CNN benchmarked against U-Net, Siamese U-Net and MobileNetV2 on LEVIR-CD and the 2023 Türkiye earthquake.',
+    href: `${GITHUB}/lightweight-ann-change-detection`,
+  },
+  {
+    name: 'Customer segmentation',
+    note: 'MSc · self-organizing maps',
+    text: 'Segments mall customers with a 10×10 self-organizing map and compares the result against a K-Means baseline.',
+    href: `${GITHUB}/som-customer-segmentation`,
   },
   {
     name: 'Unit-testing framework',
@@ -262,9 +329,6 @@ export default function App() {
 
   const ring = [...technical, ...soft]
 
-  // browsers block autoplay with sound, so music starts on a click
-  const audio = useRef(null)
-  const [playing, setPlaying] = useState(false)
   // the smoother moves content with transforms, so native #anchor jumps land in the wrong place
   const onNav = e => {
     const href = e.target.closest('a')?.getAttribute('href')
@@ -272,17 +336,6 @@ export default function App() {
     if (smoother && href?.startsWith('#')) {
       e.preventDefault()
       smoother.scrollTo(href, true, 'top top')
-    }
-  }
-
-  const toggleSound = () => {
-    const a = audio.current
-    if (a.paused) {
-      a.volume = 0.4
-      a.play().then(() => setPlaying(true), () => {})
-    } else {
-      a.pause()
-      setPlaying(false)
     }
   }
 
@@ -296,14 +349,10 @@ export default function App() {
           h.shkoukani
         </a>
         <a href="#about">About</a>
+        <a href="#experience">Work</a>
         <a href="#skills">Skills</a>
         <a href="#projects">Projects</a>
-        <button type="button" onClick={toggleSound} aria-pressed={playing}>
-          {playing ? 'Sound on' : 'Sound off'}
-        </button>
-        <audio ref={audio} src="/music.mp3" loop preload="none" />
       </nav>
-      <Visualizer audio={audio} playing={playing} />
 
       <div id="smooth-wrapper">
       <div id="smooth-content">
@@ -363,6 +412,34 @@ export default function App() {
           </div>
         </section>
 
+        <section className="xp" id="experience">
+          <GlowText>Experience</GlowText>
+          <ol className="jobs">
+            {experience.map(j => (
+              <li className="job" key={j.role + j.meta}>
+                <div>
+                  <h3>{j.role}</h3>
+                  <p className="org">
+                    {j.href ? (
+                      <a href={j.href} target="_blank" rel="noopener noreferrer">
+                        {j.org}
+                      </a>
+                    ) : (
+                      j.org
+                    )}
+                  </p>
+                  <p className="meta">{j.meta}</p>
+                </div>
+                <ul>
+                  {j.points.map(p => (
+                    <li key={p}>{p}</li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ol>
+        </section>
+
         <section className="skills" id="skills">
           <GlowText>Toolbox</GlowText>
           <div className="stage" aria-hidden="true">
@@ -400,7 +477,7 @@ export default function App() {
           <div className="track">
             <div className="track-intro">
               <GlowText>Projects</GlowText>
-              <p>Things I've built, from senior projects to weekend experiments.</p>
+              <p>Freelance work first, then AI builds and research, then smaller tools and experiments.</p>
             </div>
             {projects.map((p, i) => (
               <a className="card" href={p.href} target="_blank" rel="noopener noreferrer" key={p.name} style={{ '--h': ((i * 7) % 24) - 12 }}>

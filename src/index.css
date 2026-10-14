@@ -155,22 +155,6 @@ a {
   translate: 0.03em 0;
 }
 
-.viz {
-  position: fixed;
-  inset: auto 0 0;
-  width: 100%;
-  height: clamp(4rem, 12vh, 7.5rem);
-  z-index: 45;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.8s;
-  filter: drop-shadow(0 0 6px var(--cyan));
-}
-
-.viz.on {
-  opacity: 0.85;
-}
-
 .particles {
   position: absolute;
   inset: 0;
@@ -228,19 +212,7 @@ a {
   transition: color 0.3s;
 }
 
-.nav button {
-  font: inherit;
-  color: var(--muted);
-  background: none;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.nav a:hover,
-.nav button:hover,
-.nav button[aria-pressed='true'] {
+.nav a:hover {
   color: var(--ink);
 }
 
@@ -466,8 +438,50 @@ main > section:nth-child(even)::before {
   }
 }
 
+/* ---------- experience ---------- */
+
+.jobs {
+  list-style: none;
+  margin: clamp(2rem, 6vh, 4rem) 0 0;
+  padding: 0;
+}
+
+.job {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 34rem);
+  gap: 1rem 3rem;
+  padding: clamp(1.5rem, 4vh, 2.5rem) 0;
+  border-top: 1px solid var(--line);
+}
+
+.job h3 {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  text-shadow: var(--glow-sm);
+}
+
+.job .org {
+  margin-top: 0.4rem;
+  color: var(--cyan);
+  font-weight: 500;
+}
+
+.job .meta {
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.job ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.5rem;
+  color: var(--muted);
+}
+
 /* ---------- skills ---------- */
 
+.xp h2,
 .skills h2,
 .contact h2 {
   font-size: clamp(3.8rem, 12vw, 9.5rem);
@@ -737,7 +751,8 @@ main > .projects {
     gap: 0.5rem;
     padding: 1.25rem 0;
   }
-  .skill-lists {
+  .skill-lists,
+  .job {
     grid-template-columns: 1fr;
   }
   .nav {

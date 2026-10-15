@@ -98,8 +98,8 @@ const projects = [
   },
   {
     name: 'Relay',
-    note: 'Flask + dental YOLO model + GPT',
-    text: 'Ask questions about dental X-rays, documents, YouTube videos and a knowledge base, by typing or out loud. A YOLO model, picked by benchmarking 7 candidates on 194 X-rays, marks findings on the image, and every answer cites its page, line or timestamp.',
+    note: 'RAG · Flask + YOLO + OpenAI',
+    text: 'Voice-enabled RAG app for dental X-rays, documents, YouTube videos and a knowledge base. Answers cite their page, line or timestamp, and a YOLO model, picked by benchmarking 7 candidates on 194 X-rays (F1 0.93 on fillings), marks findings on the image.',
     href: `${GITHUB}/relay`,
   },
   {

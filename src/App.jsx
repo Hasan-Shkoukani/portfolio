@@ -104,8 +104,8 @@ const projects = [
   },
   {
     name: 'Prof Dux Mini',
-    note: 'Senior project II',
-    text: 'AI calling agent built on Twilio that helps lecturers send announcements, run online meetings and organize tasks through Google Calendar.',
+    note: 'Senior project II · LangGraph + Twilio',
+    text: 'Voice AI agent for university staff. Call it from the browser and it looks up students in Google Sheets, finds course files in Drive, emails students through Gmail, reads your calendar and creates Meet links.',
     href: `${GITHUB}/profduxmini`,
   },
   {

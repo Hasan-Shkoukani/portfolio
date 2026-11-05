@@ -118,7 +118,7 @@ const projects = [
     name: 'Satellite change detection',
     note: 'MSc · computer vision',
     text: 'Per-pixel change masks from before and after satellite images. Benchmarked a lightweight CNN against U-Net, Siamese U-Net and MobileNetV2: about 13x smaller and 2x faster, also tested on the 2023 Türkiye earthquake.',
-    href: `${GITHUB}/lightweight-ann-change-detection`,
+    href: `${GITHUB}/lightweight-cnn-change-detection`,
   },
   {
     name: 'Customer segmentation',

@@ -46,7 +46,7 @@ const soft = [
 
 const experience = [
   {
-    role: 'Full-stack developer',
+    role: 'Full-stack developer & system architect',
     org: 'TimiPays',
     href: 'https://timipays.com',
     meta: 'Freelance · Jul 2026 to present · Sweden, remote',
@@ -86,7 +86,7 @@ const experience = [
 const projects = [
   {
     name: 'TimiPays',
-    note: 'Freelance · full-stack',
+    note: 'Freelance · full-stack & system architect',
     text: 'Watch-and-earn rewards platform. Backend written from scratch: earnings engine, referrals, Stripe payouts, admin dashboard and ad delivery.',
     href: 'https://timipays.com',
   },

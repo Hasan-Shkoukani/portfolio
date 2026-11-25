@@ -103,6 +103,12 @@ const projects = [
     href: `${GITHUB}/relay`,
   },
   {
+    name: 'Leyla',
+    note: 'Open source · FastAPI + OpenAI + CLIP',
+    text: 'Flower shop assistant with a web dashboard, customer chat simulator and optional WhatsApp integration. Handles multilingual orders, baskets, quotes and receipts, generates order PDFs, and matches customer photos to products with a local CLIP index.',
+    href: `${GITHUB}/leyla`,
+  },
+  {
     name: 'Prof Dux Mini',
     note: 'Senior project II · LangGraph + Twilio',
     text: 'Voice AI agent for university staff. Call it from the browser and it looks up students in Google Sheets, finds course files in Drive, emails students through Gmail, reads your calendar and creates Meet links.',
